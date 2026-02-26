@@ -1,6 +1,6 @@
 # Gentic Agent Skills
 
-Agent skills for [Gentic](https://gentic.co) MCP tools. Works with Claude Code, Cursor, Copilot, and [40+ other agents](https://agentskills.io).
+Agent skills for [Gentic](https://gentic.co/influencer) MCP tools. Works with Claude Code, Cursor, Copilot, and [40+ other agents](https://agentskills.io).
 
 ## Install
 
@@ -26,7 +26,7 @@ Once installed, your agent automatically knows how to use Gentic's MCP tools in 
 
 ## Requirements
 
-You need the [Gentic MCP server](https://gentic.co) configured in your agent to use these skills.
+You need the [Gentic MCP server](https://gentic.co/influencer) configured in your agent to use these skills.
 
 ## License
 
