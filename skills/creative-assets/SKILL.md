@@ -23,9 +23,7 @@ Workflow guide for generating ad images and managing a searchable product image 
 
 | Tool | Purpose | Cost |
 |------|---------|------|
-| `get_brand` | Read current brand profile | Free |
-| `save_brand` | Create or update brand profile | Free |
-| `fetch_page` | Scrape a web page for brand context | 10¢/page |
+| `fetch_page` | Scrape a web page for brand/product context | 10¢/page |
 | `vectorize_product_images` | Batch vectorize product photos for searchable catalog | 5¢/image |
 | `search_product_images` | Search product catalog by text description | Free |
 | `generate_ad_asset` | Generate ad images (with optional style inspiration) | $1/image |
@@ -33,15 +31,7 @@ Workflow guide for generating ad images and managing a searchable product image 
 
 ## Workflow
 
-### 1. Brand setup (required first)
-
-Check if a brand profile exists with `get_brand`. If empty or missing, walk the user through `save_brand` before anything else. A good profile needs:
-- `description`: brand identity, values, voice, target audience
-- `activeCampaignContext`: current campaign or product focus
-
-If the user has a website, use `fetch_page` to pull context and draft the profile for them.
-
-### 2. Build the product catalog (recommended)
+### 1. Build the product catalog (recommended)
 
 Use `vectorize_product_images` to upload and vectorize product photos. This creates a searchable catalog that can be used when generating ads.
 
@@ -51,7 +41,7 @@ Use `vectorize_product_images` to upload and vectorize product photos. This crea
 - **Processing is async** — images become searchable in ~1-2 minutes
 - Upserts on `image_url` — re-vectorizing the same image updates rather than duplicates
 
-### 3. Find product images for ads
+### 2. Find product images for ads
 
 Use `search_product_images` to find the right product photos from the catalog.
 
@@ -59,7 +49,7 @@ Use `search_product_images` to find the right product photos from the catalog.
 - Returns results ranked by relevance with similarity scores
 - Use the returned `image_url` values as `brand_image_urls` when generating ads
 
-### 4. Generate ad images
+### 3. Generate ad images
 
 Use `generate_ad_asset` to create ad images. Two modes:
 
@@ -89,7 +79,7 @@ Key parameters:
 
 **Generation is async.** Tell the user images are processing and will be ready shortly.
 
-### 5. Check results
+### 4. Check results
 
 Use `list_asset_jobs` to check the status of generation jobs.
 
@@ -105,16 +95,14 @@ When presenting completed results:
 ## Typical workflows
 
 ### "Generate ads for my product"
-1. `get_brand` → check brand profile exists
-2. `search_product_images` → find relevant product photos
-3. `generate_ad_asset` → generate ads with product photos as `brand_image_urls`
-4. `list_asset_jobs` → retrieve generated image URLs
+1. `search_product_images` → find relevant product photos
+2. `generate_ad_asset` → generate ads with product photos as `brand_image_urls`
+3. `list_asset_jobs` → retrieve generated image URLs
 
 ### "Make an ad like this competitor's ad"
-1. `get_brand` → check brand profile exists
-2. `search_product_images` → find relevant product photos
-3. `generate_ad_asset` → pass competitor ad as `inspiration_image_urls`, product photos as `brand_image_urls`
-4. `list_asset_jobs` → retrieve generated image URLs
+1. `search_product_images` → find relevant product photos
+2. `generate_ad_asset` → pass competitor ad as `inspiration_image_urls`, product photos as `brand_image_urls`
+3. `list_asset_jobs` → retrieve generated image URLs
 
 ### "Upload my product photos"
 1. `vectorize_product_images` → batch upload and vectorize
@@ -127,4 +115,4 @@ When presenting completed results:
 - Mention costs when the user is generating many images ($1 each).
 - Write detailed, descriptive prompts for best ad generation results.
 - When the user provides inspiration images, emphasize that the AI copies the *style* (layout, colors, typography, vibe) but creates original content.
-- If a user asks to "create an ad" with no prior context, start from step 1.
+- If a user asks to "create an ad" with no prior context, ask what product/brand they want to advertise and gather the needed image URLs.
