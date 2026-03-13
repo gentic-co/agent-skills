@@ -1,6 +1,6 @@
 ---
 name: gentic-creative-assets
-description: Guides the creative asset workflow using Gentic MCP tools. Activates when users want to generate ad images, vectorize product photos, or search their product catalog.
+description: Guides the creative asset workflow using Gentic MCP tools. Activates when users want to generate ad images, vectorize product photos, search their product catalog, or find competitor ad inspiration.
 license: MIT
 metadata:
   author: gentic
@@ -18,6 +18,7 @@ Workflow guide for generating ad images and managing a searchable product image 
 - User wants to upload or vectorize product photos
 - User wants to search their product image catalog
 - User wants to check the status of image generation jobs
+- User wants to browse or search competitor brand ads for inspiration
 
 ## Tools reference
 
@@ -26,6 +27,7 @@ Workflow guide for generating ad images and managing a searchable product image 
 | `fetch_page` | Scrape a web page for brand/product context | 10¢/page |
 | `vectorize_product_images` | Batch vectorize product photos for searchable catalog | 5¢/image |
 | `search_product_images` | Search product catalog by text description | Free |
+| `search_inspiration_ads` | Search competitor brand ads from Meta Ad Library | Free |
 | `generate_ad_asset` | Generate ad images (with optional style inspiration) | $1/image |
 | `list_asset_jobs` | Check status and results of generation jobs | Free |
 
@@ -41,7 +43,18 @@ Use `vectorize_product_images` to upload and vectorize product photos. This crea
 - **Processing is async** — images become searchable in ~1-2 minutes
 - Upserts on `image_url` — re-vectorizing the same image updates rather than duplicates
 
-### 2. Find product images for ads
+### 2. Find competitor ads for inspiration
+
+Use `search_inspiration_ads` to browse a curated library of brand ads scraped from Meta Ad Library.
+
+- Describe the style you want in natural language (e.g. "minimalist skincare ad with white background", "bold fitness ad with athlete")
+- Filter by `brand_name` to see a specific brand's ads
+- Filter by `category` (e.g. "Health/beauty", "Apparel")
+- Filter by `platform` (FACEBOOK or INSTAGRAM)
+- Returns ad images ranked by visual similarity with ad copy and metadata
+- Use the returned `image_url` values as `inspiration_image_urls` when generating ads
+
+### 3. Find product images for ads
 
 Use `search_product_images` to find the right product photos from the catalog.
 
@@ -49,7 +62,7 @@ Use `search_product_images` to find the right product photos from the catalog.
 - Returns results ranked by relevance with similarity scores
 - Use the returned `image_url` values as `brand_image_urls` when generating ads
 
-### 3. Generate ad images
+### 4. Generate ad images
 
 Use `generate_ad_asset` to create ad images. Two modes:
 
@@ -79,7 +92,7 @@ Key parameters:
 
 **Generation is async.** Tell the user images are processing and will be ready shortly.
 
-### 4. Check results
+### 5. Check results
 
 Use `list_asset_jobs` to check the status of generation jobs.
 
@@ -100,9 +113,14 @@ When presenting completed results:
 3. `list_asset_jobs` → retrieve generated image URLs
 
 ### "Make an ad like this competitor's ad"
-1. `search_product_images` → find relevant product photos
-2. `generate_ad_asset` → pass competitor ad as `inspiration_image_urls`, product photos as `brand_image_urls`
-3. `list_asset_jobs` → retrieve generated image URLs
+1. `search_inspiration_ads` → find competitor ads by style or brand name
+2. `search_product_images` → find relevant product photos
+3. `generate_ad_asset` → pass competitor ad as `inspiration_image_urls`, product photos as `brand_image_urls`
+4. `list_asset_jobs` → retrieve generated image URLs
+
+### "Show me what skincare brands are running on Meta"
+1. `search_inspiration_ads` → search by category or style description
+2. Present results with image URLs, ad copy, and brand names
 
 ### "Upload my product photos"
 1. `vectorize_product_images` → batch upload and vectorize
@@ -111,7 +129,7 @@ When presenting completed results:
 
 ## Important notes
 
-- All tools are org-scoped. Users only see their own data.
+- Most tools are org-scoped (users only see their own data). Exception: `search_inspiration_ads` searches a shared library of brand ads available to all customers.
 - Mention costs when the user is generating many images ($1 each).
 - Write detailed, descriptive prompts for best ad generation results.
 - When the user provides inspiration images, emphasize that the AI copies the *style* (layout, colors, typography, vibe) but creates original content.
